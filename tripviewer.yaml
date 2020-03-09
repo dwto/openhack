@@ -23,12 +23,10 @@ spec:
           - secretRef:
               name: mydbsecrets
         env:
-          - name: WEB_SERVER_BASE_URI
-            value: 'http://0.0.0.0'
-          - name: WEB_PORT
+          - name: USERPROFILE_API_ENDPOINT
+            value: 'http://userprofile-service'
+          - name: TRIPS_API_ENDPOINT
             value: '80'
-          - name: ASPNETCORE_ENVIRONMENT
-            value: 'Production'
 ---
 apiVersion: v1
 kind: Service
