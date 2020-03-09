@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userprofile-deployment
+  #namespace: web
+spec:
+  selector:
+    matchLabels:
+      run: userprofile
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: userprofile
+
+    spec:
+      containers:
+      - name: userprofile
+        image: registryhwt0547.azurecr.io/tripinsights/userprofile:1.0
+        ports:
+        - containerPort: 80
+        envFrom:
+          - secretRef:
+              name: mydbsecrets
+        env:
+          - name: CONFIG_FILES_PATH
+            value: '/secrets'
+          - name: PORT
+            value: '80'
+          - name: ASPNETCORE_ENVIRONMENT
+            value: 'Production'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: userprofile-service
+  #namespace: web
+  labels:
+    run: userprofile
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: userprofile
+  
