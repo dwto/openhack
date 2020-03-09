@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trips-deployment
+  #namespace: web 
+spec:
+  selector:
+    matchLabels:
+      run: trips
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: trips
+
+    spec:
+      containers:
+      - name: trips
+        image: registryhwt0547.azurecr.io/tripinsights/trips:1.0
+        ports:
+        - containerPort: 80
+        envFrom:
+          - secretRef:
+              name: mydbsecrets
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: 'Production'
+        - name: OPENAPI_DOCS_URI
+          value: 'http://localhost'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trips-service
+  #namespace: api
+  labels:
+    run: trips
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: trips
