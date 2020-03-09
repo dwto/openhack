@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poi-deployment
+  #namespace: web
+spec:
+  selector:
+    matchLabels:
+      run: poi
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: poi
+
+    spec:
+      containers:
+      - name: poi
+        image: registryhwt0547.azurecr.io/tripinsights/poi:1.0
+        ports:
+        - containerPort: 80
+        envFrom:
+          - secretRef:
+              name: mydbsecrets
+        env:
+          - name: WEB_SERVER_BASE_URI
+            value: 'http://0.0.0.0'
+          - name: WEB_PORT
+            value: '80'
+          - name: ASPNETCORE_ENVIRONMENT
+            value: 'Production'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: poi-service
+  #namespace: web
+  labels:
+    run: poi
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: poi
+  
