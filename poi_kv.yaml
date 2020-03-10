@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poi-deployment
+  namespace: api
+spec:
+  selector:
+    matchLabels:
+      run: poi
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: poi
+    spec:
+      containers:
+      - name: poi
+        image: registryhwt0547.azurecr.io/tripinsights/poi:1.0
+        volumeMounts:
+        - name: poi-kv
+          mountPath: /secrets
+          readOnly: true
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Production
+      volumes:
+      - name: poi-kv
+        flexVolume:
+          driver: "azure/kv"
+          secretRef:
+            name: kvcreds
+          options:
+            usepodidentity: "false"
+            keyvaultname: "team4keyvalut"
+            keyvaultobjectnames: SQL-USER;SQL-PASSWORD;SQL-FQDN
+            keyvaultobjecttypes: secret;secret;secret
+            keyvaultobjectaliases: "SQL_USER;SQL_PASSWORD;SQL_SERVER"
+            resourcegroup: "teamResources"
+            subscriptionid: "4135126c-0362-4eb3-94f0-105cf7f8b9a9"
+            tenantid: "10ac67db-0119-433f-9e55-b72bb9b81830"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: poi-service-kv
+  namespace: api
+  labels:
+    run: poi
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: poi
