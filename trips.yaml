@@ -24,7 +24,7 @@ spec:
               name: mydbsecrets
         env:
         - name: ASPNETCORE_ENVIRONMENT
-          value: 'Production'
+          value: 'Development'
         - name: OPENAPI_DOCS_URI
           value: 'http://localhost'
 ---
