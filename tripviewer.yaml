@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripviewer-deployment
+  #namespace: web
+spec:
+  selector:
+    matchLabels:
+      run: tripviewer
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: tripviewer
+
+    spec:
+      containers:
+      - name: tripviewer
+        image: registryhwt0547.azurecr.io/tripinsights/tripviewer:1.0
+        ports:
+        - containerPort: 80
+        envFrom:
+          - secretRef:
+              name: mydbsecrets
+        env:
+          - name: USERPROFILE_API_ENDPOINT
+            value: 'http://userprofile-service'
+          - name: TRIPS_API_ENDPOINT
+            value: '80'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tripviewer-service
+  #namespace: web
+  labels:
+    run: tripviewer
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: tripviewer
+  
