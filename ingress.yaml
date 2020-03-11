@@ -1,0 +1,47 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: tripviewer-ingress
+  namespace: web
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: tripviewer-service 
+          servicePort: 80
+---
+
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: poi-ingress
+  namespace: api
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /api/poi
+        backend:
+          serviceName: poi-service-kv
+          servicePort: 80
+      - path: /api/trips
+        backend:
+          serviceName: trips-service
+          servicePort: 80
+      - path: /api/user
+        backend:
+          serviceName: userprofile-service
+          servicePort: 80
+      - path: /api/user-java
+        backend:
+          serviceName: user-java-service
+          servicePort: 80
+
+
+
+
+
+                  

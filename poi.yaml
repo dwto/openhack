@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: poi-deployment
-  #namespace: web
+  namespace: api
 spec:
   selector:
     matchLabels:
@@ -28,13 +28,13 @@ spec:
           - name: WEB_PORT
             value: '80'
           - name: ASPNETCORE_ENVIRONMENT
-            value: 'Production'
+            value: 'Development'
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: poi-service
-  #namespace: web
+  namespace: api
   labels:
     run: poi
 spec:

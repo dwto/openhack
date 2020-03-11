@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wcf-deployment
+  namespace: api
+spec:
+  selector:
+    matchLabels:
+      run: wcf
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        run: wcf
+
+    spec:
+      containers:
+      - name: wcf 
+        image: registryhwt0547.azurecr.io/wcfservice:2.0
+        ports:
+        - containerPort: 80
+      nodeSelector:
+        kubernetes.io/os: windows
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wcf-service
+  namespace: api
+  labels:
+    run: wcf 
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: wcf 
+  

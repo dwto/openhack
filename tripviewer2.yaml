@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tripviewer-deployment
+  name: tripviewer2-deployment
   namespace: web
 spec:
   selector:
     matchLabels:
-      run: tripviewer
+      run: tripviewer2
   replicas: 1
   template:
     metadata:
       labels:
-        run: tripviewer
+        run: tripviewer2
 
     spec:
       containers:
-      - name: tripviewer
-        image: registryhwt0547.azurecr.io/tripinsights/tripviewer:1.0
+      - name: tripviewer2
+        image: registryhwt0547.azurecr.io/tripviewer2:2.0
         ports:
         - containerPort: 80
         env:
@@ -24,18 +24,24 @@ spec:
             value: 'http://userprofile-service.api'
           - name: TRIPS_API_ENDPOINT
             value: 'http://trips-service.api'
+          - name: ASPNETCORE_ENVIRONMENT
+            value: Development
+          - name: WCF_ENDPOINT
+            value: 'http://wcf-service.api'
+      nodeSelector:
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: tripviewer-service
+  name: tripviewer2-service
   namespace: web
   labels:
-    run: tripviewer
+    run: tripviewer2
 spec:
   ports:
   - port: 80
     protocol: TCP
   selector:
-    run: tripviewer
+    run: tripviewer2
   
